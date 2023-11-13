@@ -28,6 +28,7 @@ namespace OWW
             Console.WriteLine(shortestPathCost);
             Console.WriteLine(string.Join(" -> ", seqMethod.shortestPath));
             Console.WriteLine(watch.Elapsed.TotalSeconds);
+            FileController.WriteToFile(seqMethod.shortestPath, "../../../output.txt");
         }
     }
 }

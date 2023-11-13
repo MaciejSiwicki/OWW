@@ -21,6 +21,15 @@
             }
             return coordinates;
         }
+        public static void WriteToFile(List<int> shortestPath, string filePath)
+        {
+            string pathString = string.Join(" ", shortestPath);
+
+            // Write the path to the file
+            File.WriteAllText(filePath, pathString);
+
+            Console.WriteLine($"Shortest path saved to {filePath}");
+        }
         public static int[,] CalculateDistanceMatrix(List<(int, int)> coordinates)
         {
             int numberOfCities = coordinates.Count;
@@ -36,7 +45,6 @@
 
             return distanceMatrix;
         }
-
         static int CalculateDistance((int, int) point1, (int, int) point2)
         {
             int deltaX = point2.Item1 - point1.Item1;
