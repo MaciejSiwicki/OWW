@@ -2,8 +2,8 @@
 {
     internal class TSPseq
     {
-        static List<int> shortestPath = new List<int>();
-        static int Tsp(int[,] graph, bool[] visited, int currentPos, int numberOfCities, int count, int cost, int shortestPathCost, List<int> currentPath)
+        public List<int> shortestPath = new List<int>();
+        public int Tsp(int[,] graph, bool[] visited, int currentPos, int numberOfCities, int count, int cost, int shortestPathCost, List<int> currentPath)
         {
             if (count == numberOfCities && graph[currentPos, 0] > 0)
             {
@@ -27,22 +27,6 @@
                 }
             }
             return shortestPathCost; 
-        }
-        private static void Main(string[] args)
-        {
-            int[,] graph = ReadInput.readInput("../../../input.txt");
-            int numberOfCities = graph.GetLength(0);
-            bool[] visitedCities = new bool[numberOfCities];
-            visitedCities[0] = true;
-            int shortestPathCost = int.MaxValue;
-            List<int> currentPath = new List<int>() { 0 };
-            var watch = new System.Diagnostics.Stopwatch();
-            watch.Start();
-            shortestPathCost = Tsp(graph, visitedCities, 0, numberOfCities, 1, 0, shortestPathCost, currentPath);
-            watch.Stop();
-            Console.WriteLine(shortestPathCost);
-            Console.WriteLine(string.Join(" -> ", shortestPath));
-            Console.WriteLine(watch.Elapsed.TotalSeconds);
         }
     }
 }

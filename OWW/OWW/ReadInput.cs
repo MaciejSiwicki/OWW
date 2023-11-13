@@ -2,7 +2,7 @@
 {
     internal class ReadInput
     {
-        public static int[,] readInput(string textFile)
+        public static int[,] ReadInputFromFile(string textFile)
         {
             string[] lines = File.ReadAllLines(textFile);
             int size = lines.GetLength(0);
