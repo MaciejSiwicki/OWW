@@ -29,6 +29,12 @@ namespace OWW
             Console.WriteLine(string.Join(" -> ", seqMethod.shortestPath));
             Console.WriteLine(watch.Elapsed.TotalSeconds);
             FileController.WriteToFile(seqMethod.shortestPath, "../../../output.txt");
+
+            var parMethod = new TSPpar();
+            
+            watch.Restart();
+            shortestPathCost = parMethod.TspPar(graph, numberOfCities);
+
         }
     }
 }
