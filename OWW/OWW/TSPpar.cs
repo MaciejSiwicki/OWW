@@ -8,30 +8,42 @@ namespace OWW
 {
     internal class TSPpar
     {
+        public List<int> shortestPathFinal = new List<int>();
         public int TspPar(int[,] graph, int numberOfCities)
         {
             int[] pathCosts = new int[numberOfCities];
             List<int>[] arrayOfPaths = new List<int>[numberOfCities];
             bool[] visitedCities = new bool[numberOfCities];
             visitedCities[0] = true;
-            for (int i = 1; i < numberOfCities; i++)
+
+            object lockObject = new object();
+
+            Parallel.For(1, numberOfCities, i =>
             {
                 int shortestPathCost = int.MaxValue;
                 List<int> currentPath = new List<int>() { 0 };
-                visitedCities[i] = true;
+
+                bool[] localVisitedCities = new bool[numberOfCities];
+                Array.Copy(visitedCities, localVisitedCities, numberOfCities);
+
+                localVisitedCities[i] = true;
+
                 var seqMethod = new TSPseq();
-                pathCosts[i] = seqMethod.Tsp(graph, visitedCities, i, numberOfCities, 2, 0, shortestPathCost, currentPath);
-                pathCosts[i] += graph[0, i];
-                //Console.WriteLine(pathCosts[i]);
-                seqMethod.shortestPath.Insert(1, i);
-                arrayOfPaths[i] = seqMethod.shortestPath;
-                visitedCities[i] = false;
-            }
-            for (int i = 1; i < numberOfCities; i++)
-            {
-                Console.WriteLine(string.Join(" -> ", arrayOfPaths[i]));
-            }
-            return 0;
+                int localPathCost = seqMethod.Tsp(graph, localVisitedCities, i, numberOfCities, 2, 0, shortestPathCost, currentPath);
+                localPathCost += graph[0, i];
+
+                lock (lockObject)
+                {
+                    pathCosts[i] = localPathCost;
+                    seqMethod.shortestPath.Insert(1, i);
+                    arrayOfPaths[i] = new List<int>(seqMethod.shortestPath);
+                    visitedCities[i] = false;
+                }
+            });
+
+            int shortestPathCostFinal = pathCosts.Where(x => x > 0).DefaultIfEmpty().Min();
+            shortestPathFinal = arrayOfPaths[Array.IndexOf(pathCosts, shortestPathCostFinal)];
+            return shortestPathCostFinal;
         }
     }
 }
