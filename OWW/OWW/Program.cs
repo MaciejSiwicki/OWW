@@ -20,15 +20,25 @@ namespace OWW
             List<int> currentPath = new List<int>() { 0 };
 
             var watch = new System.Diagnostics.Stopwatch();
-            watch.Start();
             var seqMethod = new TSPseq();
+            watch.Start();
             shortestPathCost = seqMethod.Tsp(graph, visitedCities, 0, numberOfCities, 1, 0, shortestPathCost, currentPath);
             watch.Stop();
 
             Console.WriteLine(shortestPathCost);
             Console.WriteLine(string.Join(" -> ", seqMethod.shortestPath));
             Console.WriteLine(watch.Elapsed.TotalSeconds);
-            FileController.WriteToFile(seqMethod.shortestPath, "../../../output.txt");
+
+            var parMethod = new TSPpar();
+            watch.Restart();
+            shortestPathCost = parMethod.TspPar(graph, numberOfCities);
+            watch.Stop();
+
+            Console.WriteLine(shortestPathCost);
+            Console.WriteLine(string.Join(" -> ", parMethod.shortestPathFinal));
+            Console.WriteLine(watch.Elapsed.TotalSeconds);
+            FileController.WriteToFile(parMethod.shortestPathFinal, "../../../output.txt");
+
         }
     }
 }
