@@ -20,14 +20,23 @@ namespace OWW
             List<int> currentPath = new List<int>() { 0 };
 
             var watch = new System.Diagnostics.Stopwatch();
-            var seqMethod = new TSPseq();
-            watch.Start();
-            shortestPathCost = seqMethod.Tsp(graph, visitedCities, 0, numberOfCities, 1, 0, shortestPathCost, currentPath);
-            watch.Stop();
+            
+            if (numberOfCities < 14)
+            {
+                var seqMethod = new TSPseq();
+                watch.Start();
+                shortestPathCost = seqMethod.Tsp(graph, visitedCities, 0, numberOfCities, 1, 0, shortestPathCost, currentPath);
+                watch.Stop();
 
-            Console.WriteLine(shortestPathCost);
-            Console.WriteLine(string.Join(" -> ", seqMethod.shortestPath));
-            Console.WriteLine(watch.Elapsed.TotalSeconds);
+                Console.WriteLine(shortestPathCost);
+                Console.WriteLine(string.Join(" -> ", seqMethod.shortestPath));
+                Console.WriteLine(watch.Elapsed.TotalSeconds);
+                FileController.WriteToFileTime(watch.Elapsed.TotalSeconds, "../../../output_time.txt");
+            }
+            else
+            {
+                FileController.WriteToFileTime(0, "../../../output_time.txt");
+            }
 
             var parMethod = new TSPpar();
             watch.Restart();
@@ -37,8 +46,8 @@ namespace OWW
             Console.WriteLine(shortestPathCost);
             Console.WriteLine(string.Join(" -> ", parMethod.shortestPathFinal));
             Console.WriteLine(watch.Elapsed.TotalSeconds);
-            FileController.WriteToFile(parMethod.shortestPathFinal, "../../../output.txt");
-
+            FileController.WriteToFileTime(watch.Elapsed.TotalSeconds, "../../../output_time.txt");
+            FileController.WriteToFilePath(parMethod.shortestPathFinal, "../../../output.txt");
         }
     }
 }

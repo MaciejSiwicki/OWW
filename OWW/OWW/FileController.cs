@@ -21,14 +21,36 @@
             }
             return coordinates;
         }
-        public static void WriteToFile(List<int> shortestPath, string filePath)
+        public static void WriteToFilePath(List<int> shortestPath, string filePath)
         {
             string pathString = string.Join(" ", shortestPath);
 
-            // Write the path to the file
             File.WriteAllText(filePath, pathString);
-
-            Console.WriteLine($"Shortest path saved to {filePath}");
+        }
+        public static void WriteToFileTime(double time, string filePath)
+        {
+            char lastChar = 'j';
+            if (File.Exists(filePath))
+            {
+                using StreamReader reader = new(filePath);
+                while (!reader.EndOfStream)
+                {
+                    lastChar = (char)reader.Read();
+                }
+            }
+            using StreamWriter writer = new(filePath, true);
+            if (lastChar == ' ')
+            {
+                writer.Write(time + Environment.NewLine);
+            }
+            else if (lastChar == '\n' || lastChar == '\r')
+            {
+                writer.Write(time + " ");
+            }
+            else
+            {
+                writer.Write(time + " ");
+            }
         }
         public static int[,] CalculateDistanceMatrix(List<(int, int)> coordinates)
         {
