@@ -21,7 +21,7 @@ namespace OWW
 
             var watch = new System.Diagnostics.Stopwatch();
             
-            if (numberOfCities < 14)
+            if (numberOfCities < 13)
             {
                 var seqMethod = new TSPseq();
                 watch.Start();
@@ -37,12 +37,18 @@ namespace OWW
             {
                 FileController.WriteToFileTime(0, "../../../output_time.txt");
             }
-
             var parMethod = new TSPpar();
-            watch.Restart();
-            shortestPathCost = parMethod.TspPar(graph, numberOfCities);
-            watch.Stop();
-
+            var elapsedTimes = new List<double>();
+            for (int i = 2; i < 9; i++)
+            {
+                watch.Restart();
+                shortestPathCost = parMethod.TspPar(graph, numberOfCities, i);
+                watch.Stop();
+                Console.WriteLine(watch.Elapsed.TotalSeconds);
+                elapsedTimes.Add(watch.Elapsed.TotalSeconds);
+            }
+            var delimitedTimes = string.Join(" ", elapsedTimes.Select(time => time.ToString("F6")));
+            FileController.WriteToFileThread(delimitedTimes + Environment.NewLine, "../../../output_time_thread.txt");
             Console.WriteLine(shortestPathCost);
             Console.WriteLine(string.Join(" -> ", parMethod.shortestPathFinal));
             Console.WriteLine(watch.Elapsed.TotalSeconds);
