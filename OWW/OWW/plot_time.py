@@ -8,23 +8,26 @@ with open("output_time.txt", "r") as f:
 data1 = [float(line.split()[0].replace(",", ".")) for line in lines]
 data2 = [float(line.split()[1].replace(",", ".")) for line in lines]
 
+ratio = [d1 / d2 for d1, d2 in zip(data1, data2)]
 
-x = np.arange(len(data1)) + 5
-
-
-width = 0.35
+x = np.arange(len(ratio)) + 10
 
 fig, ax = plt.subplots()
 
+points = ax.plot(x, ratio, "o", label="par_time/seq_time")
 
-rects1 = ax.bar(x - width / 2, data1, width, label="seq_time")
-rects2 = ax.bar(x + width / 2, data2, width, label="par_time")
+coefficients = np.polyfit(x, ratio, 2)
+poly = np.poly1d(coefficients)
 
+x_fit = np.linspace(x.min(), x.max(), 500)
 
-ax.set_ylabel("Times [s]")
-ax.set_xlabel("Number of cities")
+yfit = poly(x_fit)
+
+ax.plot(x_fit, yfit, "--", color=points[0].get_color())
+
+ax.set_ylabel("Przyspieszenie")
+ax.set_xlabel("Liczba miast")
 ax.set_xticks(x)
-ax.legend()
 
 fig.tight_layout()
 
