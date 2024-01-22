@@ -20,25 +20,40 @@ namespace OWW
             List<int> currentPath = new List<int>() { 0 };
 
             var watch = new System.Diagnostics.Stopwatch();
-            var seqMethod = new TSPseq();
-            watch.Start();
-            shortestPathCost = seqMethod.Tsp(graph, visitedCities, 0, numberOfCities, 1, 0, shortestPathCost, currentPath);
-            watch.Stop();
+            
+            if (numberOfCities < 13)
+            {
+                var seqMethod = new TSPseq();
+                watch.Start();
+                shortestPathCost = seqMethod.Tsp(graph, visitedCities, 0, numberOfCities, 1, 0, shortestPathCost, currentPath);
+                watch.Stop();
 
-            Console.WriteLine(shortestPathCost);
-            Console.WriteLine(string.Join(" -> ", seqMethod.shortestPath));
-            Console.WriteLine(watch.Elapsed.TotalSeconds);
-
+                Console.WriteLine(shortestPathCost);
+                Console.WriteLine(string.Join(" -> ", seqMethod.shortestPath));
+                Console.WriteLine(watch.Elapsed.TotalSeconds);
+                FileController.WriteToFileTime(watch.Elapsed.TotalSeconds, "../../../output_time.txt");
+            }
+            else
+            {
+                FileController.WriteToFileTime(0, "../../../output_time.txt");
+            }
             var parMethod = new TSPpar();
-            watch.Restart();
-            shortestPathCost = parMethod.TspPar(graph, numberOfCities);
-            watch.Stop();
-
+            var elapsedTimes = new List<double>();
+            for (int i = 2; i < 9; i++)
+            {
+                watch.Restart();
+                shortestPathCost = parMethod.TspPar(graph, numberOfCities, i);
+                watch.Stop();
+                Console.WriteLine(watch.Elapsed.TotalSeconds);
+                elapsedTimes.Add(watch.Elapsed.TotalSeconds);
+            }
+            var delimitedTimes = string.Join(" ", elapsedTimes.Select(time => time.ToString("F6")));
+            FileController.WriteToFileThread(delimitedTimes + Environment.NewLine, "../../../output_time_thread.txt");
             Console.WriteLine(shortestPathCost);
             Console.WriteLine(string.Join(" -> ", parMethod.shortestPathFinal));
             Console.WriteLine(watch.Elapsed.TotalSeconds);
-            FileController.WriteToFile(parMethod.shortestPathFinal, "../../../output.txt");
-
+            FileController.WriteToFileTime(watch.Elapsed.TotalSeconds, "../../../output_time.txt");
+            FileController.WriteToFilePath(parMethod.shortestPathFinal, "../../../output.txt");
         }
     }
 }

@@ -9,8 +9,12 @@ namespace OWW
     internal class TSPpar
     {
         public List<int> shortestPathFinal = new List<int>();
-        public int TspPar(int[,] graph, int numberOfCities)
+        public int TspPar(int[,] graph, int numberOfCities, int numberOfProcessors)
         {
+            var options = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = numberOfProcessors
+            };
             int[] pathCosts = new int[numberOfCities];
             List<int>[] arrayOfPaths = new List<int>[numberOfCities];
             bool[] visitedCities = new bool[numberOfCities];
@@ -18,7 +22,7 @@ namespace OWW
 
             object lockObject = new object();
 
-            Parallel.For(1, numberOfCities, i =>
+            Parallel.For(1, numberOfCities, options, i =>
             {
                 int shortestPathCost = int.MaxValue;
                 List<int> currentPath = new List<int>() { 0 };
